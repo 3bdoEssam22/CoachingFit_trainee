@@ -103,7 +103,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
         'heightCm': heightCm,
         'fitnessLevel': fitnessLevel,
         'goals': goals,
-        if (medicalNotes != null && medicalNotes.isNotEmpty) 'medicalNotes': medicalNotes,
+        // On update, send medicalNotes whenever the caller provides a non-null value
+        // (including '') so an emptied field clears the stored note instead of being
+        // silently dropped. Photo stays omit-to-keep-existing.
+        if (medicalNotes != null) 'medicalNotes': medicalNotes,
         if (photo != null) 'photo': await MultipartFile.fromFile(photo.path),
       });
       await _dioClient.dio.put(ApiConstants.traineeProfile, data: formData);
