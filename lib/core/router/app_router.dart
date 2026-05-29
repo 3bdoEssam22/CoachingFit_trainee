@@ -39,7 +39,8 @@ class AppRouter {
 
       final hasProfile = await _secureStorage.readHasProfile();
       if (!hasProfile) {
-        return path == '/create-profile' ? null : '/create-profile';
+        const profilePublicPaths = ['/create-profile', '/email-confirmation'];
+        return profilePublicPaths.contains(path) ? null : '/create-profile';
       }
       if (publicPaths.contains(path)) return '/home';
       return null;

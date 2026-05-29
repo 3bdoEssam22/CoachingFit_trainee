@@ -11,7 +11,11 @@ class ApiInterceptor extends Interceptor {
   final GoRouter _router;
   final _uuid = const Uuid();
 
-  late final Dio _rawDio = Dio(BaseOptions(baseUrl: ApiConstants.baseUrl));
+  late final Dio _rawDio = Dio(BaseOptions(
+    baseUrl: ApiConstants.baseUrl,
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(seconds: 30),
+  ));
   Completer<String>? _refreshInFlight;
 
   // Only register + refresh are idempotent on the trainee backend.
