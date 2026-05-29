@@ -37,6 +37,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _load() async {
     try {
       final TraineeProfile p = await sl<ProfileRepository>().getMyProfile();
+      if (!mounted) return;
       _weight.text = p.weightKg.toString();
       _height.text = p.heightCm.toString();
       _goals.text = p.goals;
