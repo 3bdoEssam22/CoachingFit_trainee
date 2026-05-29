@@ -57,7 +57,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> resolveSession() async {
     final token = await _secureStorage.readToken();
-    if (token == null) {
+    if (token == null || token.isEmpty) {
       emit(const AuthSuccess(AuthNextStep.onboarding));
       return;
     }

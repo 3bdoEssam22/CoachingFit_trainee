@@ -28,5 +28,5 @@ Future<void> init() async {
   sl.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(sl()));
 
   sl.registerFactory(() => AuthCubit(sl<AuthRepository>(), sl<ProfileRepository>(), sl<SecureStorage>()));
-  sl.registerFactory(() => ProfileCubit(sl(), sl<SecureStorage>()));
+  sl.registerFactory(() => ProfileCubit(sl<ProfileRepository>(), sl<SecureStorage>()));
 }

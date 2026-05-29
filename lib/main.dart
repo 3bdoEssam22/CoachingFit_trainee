@@ -3,7 +3,6 @@ import 'package:coaching_fit_trainee/core/theme/app_theme.dart';
 import 'package:coaching_fit_trainee/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:coaching_fit_trainee/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:coaching_fit_trainee/service_locator.dart' as di;
-import 'package:coaching_fit_trainee/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,13 +19,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => sl<AuthCubit>()),
-        BlocProvider(create: (context) => sl<ProfileCubit>()),
+        BlocProvider(create: (context) => di.sl<AuthCubit>()),
+        BlocProvider(create: (context) => di.sl<ProfileCubit>()),
       ],
       child: MaterialApp.router(
         title: 'CoachingFit Trainee',
         theme: AppTheme.darkTheme,
-        routerConfig: sl<AppRouter>().router,
+        routerConfig: di.sl<AppRouter>().router,
         debugShowCheckedModeBanner: false,
       ),
     );
