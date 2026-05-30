@@ -26,6 +26,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _medical = TextEditingController();
   int _fitnessLevel = 1;
   File? _photo;
+  String? _existingPhotoUrl;
   bool _loading = true;
 
   @override
@@ -43,6 +44,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _goals.text = p.goals;
       _medical.text = p.medicalNotes ?? '';
       _fitnessLevel = p.fitnessLevel;
+      _existingPhotoUrl = p.profilePhotoUrl;
     } catch (_) {}
     if (mounted) setState(() => _loading = false);
   }
@@ -92,8 +94,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: CircleAvatar(
                               radius: 50,
                               backgroundColor: AppColors.card,
-                              backgroundImage: _photo != null ? FileImage(_photo!) : null,
-                              child: _photo == null
+                              backgroundImage: _photo != null
+                                  ? FileImage(_photo!) as ImageProvider
+                                  : (_existingPhotoUrl != null
+                                      ? NetworkImage(_existingPhotoUrl!)
+                                      : null),
+                              child: (_photo == null && _existingPhotoUrl == null)
                                   ? const Icon(Icons.add_a_photo, color: AppColors.textHint, size: 28)
                                   : null,
                             ),
