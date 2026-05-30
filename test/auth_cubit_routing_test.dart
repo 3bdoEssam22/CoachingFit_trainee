@@ -50,4 +50,36 @@ void main() {
     act: (c) => c.resolveSession(),
     expect: () => [const AuthSuccess(AuthNextStep.createProfile)],
   );
+
+  blocTest<AuthCubit, AuthState>(
+    'resolveSession does NOT log out on a transient error; routes home '
+    'from cached hasProfile=true',
+    build: () {
+      when(() => profile.getMyProfile())
+          .thenThrow(const ServerFailure('Cannot reach the server'));
+      when(() => storage.readHasProfile()).thenAnswer((_) async => true);
+      return AuthCubit(auth, profile, storage);
+    },
+    act: (c) => c.resolveSession(),
+    expect: () => [const AuthSuccess(AuthNextStep.home)],
+    verify: (_) {
+      verifyNever(() => storage.clearAll()); // credentials preserved
+    },
+  );
+
+  blocTest<AuthCubit, AuthState>(
+    'resolveSession on a transient error routes to createProfile '
+    'when cached hasProfile=false',
+    build: () {
+      when(() => profile.getMyProfile())
+          .thenThrow(const ServerFailure('Cannot reach the server'));
+      when(() => storage.readHasProfile()).thenAnswer((_) async => false);
+      return AuthCubit(auth, profile, storage);
+    },
+    act: (c) => c.resolveSession(),
+    expect: () => [const AuthSuccess(AuthNextStep.createProfile)],
+    verify: (_) {
+      verifyNever(() => storage.clearAll());
+    },
+  );
 }

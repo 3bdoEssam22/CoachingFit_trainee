@@ -33,7 +33,7 @@ class AppRouter {
 
       final token = await _secureStorage.readToken();
       const publicPaths = ['/login', '/register', '/email-confirmation', '/onboarding'];
-      if (token == null) {
+      if (token == null || token.isEmpty) {
         return publicPaths.contains(path) ? null : '/login';
       }
 

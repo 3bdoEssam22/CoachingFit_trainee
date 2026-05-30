@@ -64,8 +64,12 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthSuccess(await _resolvePostAuthStep()));
     } catch (_) {
-      await _secureStorage.clearAll();
-      emit(const AuthSuccess(AuthNextStep.login));
+      // Transient/connectivity error (NOT an auth rejection — the interceptor
+      // handles 401s and clears on a dead refresh token). Don't wipe credentials;
+      // route on the last-known profile state. A truly dead token will surface on
+      // the next authed call and be cleaned up by the interceptor.
+      final hasProfile = await _secureStorage.readHasProfile();
+      emit(AuthSuccess(hasProfile ? AuthNextStep.home : AuthNextStep.createProfile));
     }
   }
 

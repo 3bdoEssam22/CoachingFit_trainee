@@ -61,7 +61,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       final formData = FormData.fromMap({
         'gender': gender,
-        'dateOfBirth': dateOfBirth.toUtc().toIso8601String(),
+        // Date-only (no timezone) so a DOB picked at local midnight isn't shifted
+        // back a day when converted to UTC for users behind UTC.
+        'dateOfBirth':
+            '${dateOfBirth.year.toString().padLeft(4, '0')}-${dateOfBirth.month.toString().padLeft(2, '0')}-${dateOfBirth.day.toString().padLeft(2, '0')}',
         'weightKg': weightKg,
         'heightCm': heightCm,
         'fitnessLevel': fitnessLevel,
